@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>title</title>
+        <link rel="stylesheet" href="#" />
+    </head>
+    <body>
+        <div class="card">
+            <div class="card-body">
+                <h2>Confirm Delete</h2>
+        
+        <p>Are you sure you want to delete the award for Employee ID: {{ award.employee_id }}?</p>
+        
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit">Delete</button>
+        </form>
+            </div>
+        </div>
+    </body>
+</html>

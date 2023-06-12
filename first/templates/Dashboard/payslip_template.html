@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<head>
+  {% load static %}
+  {% load bootstrap5 %}
+    <title>Payslip</title>
+   
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 text-center mb-4">
+                <img src="{company_logo}" class="img-fluid" alt="Company Logo">
+                <h4 class="mt-3">{company_name}</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h5 class="text-center">Full Names: {{ employee.first_name }} {{ employee.middle_name }} {{ employee.last_name}} </h5>
+                <p class="text-center">Employement ID: {{ employee.Employement_id }}</p>
+                <p class="text-center">Email: {{ employee.Email }}</p>
+                <p class="text-center">Date of Generation: {generation_date}</p>
+                <p class="text-center">Tax Amount: {tax_amount}</p>
+                <p class="text-center">Allowance: {allowance}</p>
+                <p class="text-center">Monthly Commission: {commission}</p>
+            </div>
+        </div>
+    </div>
+</body>

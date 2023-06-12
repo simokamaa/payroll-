@@ -1,0 +1,159 @@
+<form action="{% url 'generate_payslip' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Download PDF</button>
+  </form>
+
+  {% for employee in employees %}
+    <h2>{{ employee.name }}</h2>
+    <p>Position: {{ employee.position }}</p>
+    <p>Salary: {{ employee.salary }}</p>
+    <a href="{% url 'employee_detail' employee.pk %}">Detail</a>
+    <a href="{% url 'employee_update' employee.pk %}">Update</a>
+    <a href="{% url 'employee_delete' employee.pk %}">Delete</a>
+    <hr>
+{% endfor %}
+
+<a href="{% url 'employee_create' %}">Create New Employee</a>
+
+<h2>{{ employee.name }}</h2>
+<p>Position: {{ employee.position }}</p>
+<p>Salary: {{ employee.salary }}</p>
+
+<a href="{% url 'employee_update' employee.pk %}">Update</a>
+<a href="{% url 'employee_delete' employee.pk %}">Delete</a>
+<a href="{% url 'employee_list' %}">Back to List</a>
+
+<h2>{{ form_title }}</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+<a href="{% url 'employee_list' %}">Cancel</a>
+
+<h2>Confirm Delete</h2>
+<p>Are you sure you want to delete {{ employee.name }}?</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+</form>
+<a href="{% url 'employee_list' %}">Cancel</a>
+
+
+
+//daily work list
+{% for dailywork in dailyworks %}
+    <h2>Employee ID: {{ dailywork.employee_id }}</h2>
+    <p>Employee Name: {{ dailywork.employee_name }}</p>
+    <p>Total Amount: {{ dailywork.total_amount }}</p>
+    <p>Job Type: {{ dailywork.job_type }}</p>
+    <a href="{% url 'dailywork_detail' dailywork.pk %}">Detail</a>
+    <a href="{% url 'dailywork_update' dailywork.pk %}">Update</a>
+    <a href="{% url 'dailywork_delete' dailywork.pk %}">Delete</a>
+    <hr>
+{% endfor %}
+
+<a href="{% url 'dailywork_create' %}">Create New Daily Work</a>
+
+//daily work detail 
+<h2>Employee ID: {{ dailywork.employee_id }}</h2>
+<p>Employee Name: {{ dailywork.employee_name }}</p>
+<p>Total Amount: {{ dailywork.total_amount }}</p>
+<p>Job Type: {{ dailywork.job_type }}</p>
+
+<a href="{% url 'dailywork_update' dailywork.pk %}">Update</a>
+<a href="{% url 'dailywork_delete' dailywork.pk %}">Delete</a>
+<a href="{% url 'dailywork_list' %}">Back to List</a>
+ 
+daily work form 
+<h2>{{ form_title }}</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+<a href="{% url 'dailywork_list' %}">Cancel</a>
+ dialy work url 
+ from django.urls import path
+from dailywork.views import (
+    dailywork_list, dailywork_detail, dailywork_create, dailywork_update, dailywork_delete
+)
+
+urlpatterns = [
+    path('dailyworks/', dailywork_list, name='dailywork_list'),
+    path('dailyworks/create/', dailywork_create, name='dailywork_create'),
+    path('dailyworks/<int:pk>/', dailywork_detail, name='dailywork_detail'),
+    path('dailyworks/<int:pk>/update/', dailywork_update, name='dailywork_update'),
+    path('dailyworks/<int:pk>/delete/', dailywork_delete, name='dailywork_delete'),
+]
+
+//salary reports
+//Define the Employee model in the models.py file within the salary_report app:
+from django.db import models
+
+class Employee(models.Model):
+    name = models.CharField(max_length=255)
+    total_amount = models.FloatField()
+
+    def calculate_commission(self, period):
+        if period == 'daily':
+            commission_rate = 0.35
+        elif period == 'weekly':
+            commission_rate = 0.35 * 7
+        elif period == 'monthly':
+            commission_rate = 0.35 * 30
+
+        commission = self.total_amount * commission_rate
+        return commission
+
+    def remaining_amount(self, period):
+        commission = self.calculate_commission(period)
+        remaining_amount = self.total_amount - commission
+        return remaining_amount
+
+        //Create a view and template to generate the salary report. In the views.py file within the salary_report app, add the following code:
+        from django.shortcuts import render
+from .models import Employee
+
+def salary_report(request, period):
+    employees = Employee.objects.all()
+    context = {
+        'employees': employees,
+        'period': period,
+    }
+    return render(request, 'salary_report/salary_report.html', context)
+
+
+    //template salary report 
+    <h2>Salary Report - {{ period }}</h2>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Total Amount</th>
+    <th>Commission</th>
+    <th>Remaining Amount</th>
+  </tr>
+  {% for employee in employees %}
+    <tr>
+      <td>{{ employee.name }}</td>
+      <td>{{ employee.total_amount }}</td>
+      <td>{{ employee.calculate_commission(period) }}</td>
+      <td>{{ employee.remaining_amount(period) }}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+<p>Total Amount: {{ employees|aggregate(sum_total_amount=Sum('total_amount')).sum_total_amount }}</p>
+<p>Amount Remaining After Commission: {{ employees|aggregate(sum_remaining_amount=Sum('total_amount') - Sum('total_amount' * 0.35)).sum_remaining_amount }}</p>
+
+//url
+from django.urls import path, include
+
+urlpatterns = [
+    # ...
+    path('', include('salary_report.urls')),
+]

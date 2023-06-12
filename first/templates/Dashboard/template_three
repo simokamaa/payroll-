@@ -1,0 +1,481 @@
+
+<div>
+  <table class="table">
+    <thead>
+      <tr>
+      
+        <th scope="col">EMP ID</th>
+        <th scope="col">User Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Phone Number</th>
+        <th scope="col">Kra_pin </th>
+        <th scope="col">Image</th>
+        <th scope="col">front_id_image</th>
+        <th scope="col">back_id_image</th>
+        <th scope="col">salary</th>
+        <th scope="col">Department</th>
+        
+      </tr>
+    </thead>
+    <tbody class="table-group-divider">
+     
+         <tr>
+        <th scope="row">{{ employee.Employement_id }}</th>
+        <td>{{ employee.Username }}</td>
+        <td>{{ employee.Email }}</td>
+        <td>{{ employee.phone_number }}</td>
+        <td>{{ employee.kra_pin }}</td>
+        <td>{{ employee.image }}</td>
+        <td>{{ employee.front_id_image }}</td>
+        <td>{{ employee.back_id_image }}</td>
+        <td>{{ employee.salary }}</td>
+        <td>{{ employee.department }}</td>
+      </tr>
+     
+      
+    </tbody>
+  </table>
+</div>
+</div>
+<!-- Left side columns -
+
+
+
+
+
+
+from django.shortcuts import render, redirect
+from .models import AddExpenses
+from .forms import AddExpensesForm
+<a href="{% url 'employee_delete' employee.pk %}">Delete</a>
+path('accounts/', include('accounts.urls')),
+def expense_list(request):
+    expenses = AddExpenses.objects.all()
+    return render(request, 'expenses/expense_list.html', {'expenses': expenses})
+
+    <div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">EMP ID</th>
+            <th scope="col">User Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone Number</th>
+            <th scope="col">Kra_pin </th>
+            <th scope="col">Image</th>
+            <th scope="col">front_id_image</th>
+            <th scope="col">back_id_image</th>
+            <th scope="col">salary</th>
+            <th scope="col">Department</th>
+
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
+         {% for employee in empoyees %}
+             <tr>
+            <th scope="row">{{ employee.Employement_id }}</th>
+            <td>{{ employee.Username }}</td>
+            <td>{{ employee.Email }}</td>
+            <td>{{ employee.phone_number }}</td>
+            <td>{{ employee.kra_pin }}</td>
+            <td>{{ employee.image }}</td>
+            <td>{{ employee.front_id_image }}</td>
+            <td>{{ employee.back_id_image }}</td>
+            <td>{{ employee.salary }}</td>
+            <td>{{ employee.department }}</td>
+          </tr>
+         {% endfor %}
+          
+        </tbody>
+      </table>
+    </div>
+
+
+    <!-- {% for employee in employees %}
+        <h1>employee list</h1>
+        <h2>{{ employee.username }}</h2>
+        <p>first name: {{ employee.first_name }}</p>
+        <p>Position: {{ employee.image }}</p>
+        <p>Salary: {{ employee.salary }}</p>
+        <a href="{% url 'employee_detail' employee.pk %}">Detail</a>
+        <a href="{% url 'employee_update' employee.pk %}">Update</a>
+        <a href="{% url 'employee_delete' employee.pk %}">Delete</a>
+      
+        <hr>
+      {% endfor %} -->
+
+
+      <section class="section dashboard">
+        <div class="row">
+          <div class="mb-3">
+            <label for="employment_id" class="form-label">Employee salary list</label>
+           
+            <div>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">EMP ID</th>
+                    <th scope="col">User Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone Number</th>
+                    <th scope="col">Kra_pin </th>
+                    <th scope="col">Image</th>
+                    <th scope="col">front_id_image</th>
+                    <th scope="col">back_id_image</th>
+                    <th scope="col">salary</th>
+                    <th scope="col">Department</th>
+    
+                  </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                 {% for employee in empoyees %}
+                     <tr>
+                    <th scope="row">{{ employee.Employement_id }}</th>
+                    <td>{{ employee.Username }}</td>
+                    <td>{{ employee.Email }}</td>
+                    <td>{{ employee.phone_number }}</td>
+                    <td>{{ employee.kra_pin }}</td>
+                    <td>{{ employee.image }}</td>
+                    <td>{{ employee.front_id_image }}</td>
+                    <td>{{ employee.back_id_image }}</td>
+                    <td>{{ employee.salary }}</td>
+                    <td>{{ employee.department }}</td>
+                  </tr>
+                 {% endfor %}
+                  
+                </tbody>
+              </table>
+            </div>
+         
+          
+        </div>
+      </section> 
+def expense_create(request):
+    form = AddExpensesForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('expense_list')
+    return render(request, 'expenses/expense_form.html', {'form': form})
+
+def expense_update(request, pk):
+    expense = AddExpenses.objects.get(pk=pk)
+    form = AddExpensesForm(request.POST or None, instance=expense)
+    if form.is_valid():
+        form.save()
+        return redirect('expense_list')
+    return render(request, 'expenses/expense_form.html', {'form': form})
+
+def expense_delete(request, pk):
+    expense = AddExpenses.objects.get(pk=pk)
+    if request.method == 'POST':
+        expense.delete()
+        return redirect('expense_list')
+    return render(request, 'expenses/expense_confirm_delete.html', {'expense': expense})
+
+    //displaying
+    <h2>Expense List</h2>
+<a href="{% url 'expense_create' %}">Add Expense</a>
+
+<table>
+  <thead>
+    <tr>
+      <th>Expense Name</th>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Amount</th>
+      <th>Text</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for expense in expenses %}
+    <tr>
+      <td>{{ expense.expense_name }}</td>
+      <td>{{ expense.date }}</td>
+      <td>{{ expense.time }}</td>
+      <td>{{ expense.amount }}</td>
+      <td>{{ expense.text }}</td>
+      <td>
+        <a href="{% url 'expense_update' expense.pk %}">Edit</a>
+        <a href="{% url 'expense_delete' expense.pk %}">Delete</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+//form
+<h2>{{ form_title }}</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <button type="submit">Save</button>
+</form>
+
+//confirm delete 
+<h2>Confirm Delete</h2>
+
+<p>Are you sure you want to delete the expense: {{ expense.expense_name }}?</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+</form>
+
+
+url 
+from django.urls import path
+from .views import expense_list, expense_create, expense_update, expense_delete
+
+urlpatterns = [
+    path('', expense_list, name='expense_list'),
+    path('create/', expense_create, name='expense_create'),
+    path('update/<int:pk>/', expense_update, name='expense_update'),
+    path('delete/<int:pk>/', expense_delete, name='expense_delete'),
+]
+from django.urls import path, include
+
+urlpatterns = [
+    # ...
+    path('expenses/', include('expenses.urls')),
+]
+
+//employee award
+from django.shortcuts import render, redirect
+from .models import EmployeeAward
+from .forms import EmployeeAwardForm
+
+def award_list(request):
+    awards = EmployeeAward.objects.all()
+    return render(request, 'awards/award_list.html', {'awards': awards})
+
+def award_create(request):
+    form = EmployeeAwardForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('award_list')
+    return render(request, 'awards/award_form.html', {'form': form})
+
+def award_update(request, pk):
+    award = EmployeeAward.objects.get(pk=pk)
+    form = EmployeeAwardForm(request.POST or None, instance=award)
+    if form.is_valid():
+        form.save()
+        return redirect('award_list')
+    return render(request, 'awards/award_form.html', {'form': form})
+
+def award_delete(request, pk):
+    award = EmployeeAward.objects.get(pk=pk)
+    if request.method == 'POST':
+        award.delete()
+        return redirect('award_list')
+    return render(request, 'awards/award_confirm_delete.html', {'award': award})
+
+    its template 
+    <h2>Award List</h2>
+<a href="{% url 'award_create' %}">Add Award</a>
+
+<table>
+  <thead>
+    <tr>
+      <th>Employee ID</th>
+      <th>Employee Name</th>
+      <th>Gift Item</th>
+
+
+
+
+
+      <th>Month</th>
+      <th>Award Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for award in awards %}
+    <tr>
+      <td>{{ award.employee_id }}</td>
+      <td>{{ award.employee_name }}</td>
+      <td>{{ award.gift_item }}</td>
+      <td>{{ award.month }}</td>
+      <td>{{ award.award_date }}</td>
+      <td>
+        <a href="{% url 'award_update' award.pk %}">Edit</a>
+        <a href="{% url 'award_delete' award.pk %}">Delete</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+//the form 
+<h2>Confirm Delete</h2>
+
+<p>Are you sure you want to delete the award for Employee ID: {{ award.employee_id }}?</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+</form>
+
+//urls
+from django.urls import path
+from .views import award_list, award_create, award_update, award_delete
+
+urlpatterns = [
+    path('', award_list, name='award_list'),
+    path('create/', award_create, name='award_create'),
+    path('update/<int:pk>/', award_update, name='award_update'),
+    path('delete/<int:pk>/', award_delete, name='award_delete'),
+]
+
+from django.urls import path, include
+
+urlpatterns = [
+    # ...
+    path('awards/', include('awards.urls')),
+]
+
+
+//overtime
+from django.shortcuts import render, redirect
+from .models import Overtime
+from .forms import OvertimeForm
+
+def overtime_list(request):
+    overtimes = Overtime.objects.all()
+    return render(request, 'overtime_app/overtime_list.html', {'overtimes': overtimes})
+
+def overtime_create(request):
+    form = OvertimeForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('overtime_list')
+    return render(request, 'overtime_app/overtime_form.html', {'form': form})
+
+def overtime_update(request, pk):
+    overtime = Overtime.objects.get(pk=pk)
+    form = OvertimeForm(request.POST or None, instance=overtime)
+    if form.is_valid():
+        form.save()
+        return redirect('overtime_list')
+    return render(request, 'overtime_app/overtime_form.html', {'form': form})
+
+def overtime_delete(request, pk):
+    overtime = Overtime.objects.get(pk=pk)
+    if request.method == 'POST':
+        overtime.delete()
+        return redirect('overtime_list')
+    return render(request, 'overtime_app/overtime_confirm_delete.html', {'overtime': overtime})
+
+    //overtime template list 
+    <h2>Overtime List</h2>
+<a href="{% url 'overtime_create' %}">Add Overtime</a>
+
+<table>
+  <thead>
+    <tr>
+      <th>Employee ID</th>
+      <th>Date</th>
+      <th>Hour</th>
+      <th>Text</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for overtime in overtimes %}
+    <tr>
+      <td>{{ overtime.employee_id }}</td>
+      <td>{{ overtime.date }}</td>
+      <td>{{ overtime.hour }}</td>
+      <td>{{ overtime.text }}</td>
+      <td>
+        <a href="{% url 'overtime_update' overtime.pk %}">Edit</a>
+        <a href="{% url 'overtime_delete' overtime.pk %}">Delete</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+//overtime form 
+<h2>{{ form_title }}</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <button type="submit">Save</button>
+</form>
+
+//overtime delete 
+<h2>Confirm Delete</h2>
+
+<p>Are you sure you want to delete the overtime record for Employee ID: {{ overtime.employee_id }}?</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+</form>
+
+//url 
+from django.urls import path
+from .views import overtime_list, overtime_create, overtime_update, overtime_delete
+
+urlpatterns = [
+    path('', overtime_list, name='overtime_list'),
+    path('create/', overtime_create, name='overtime_create'),
+    path('update/<int:pk>/', overtime_update, name='overtime_update'),
+    path('delete/<int:pk>/', overtime_delete, name='overtime_delete'),
+]
+
+//url 
+from django.urls import path, include
+
+urlpatterns = [
+    # ...
+    path('overtime/', include('overtime_app.urls')),
+]
+
+
+//fixed salary
+from django.shortcuts import render
+from .forms import SalaryForm
+
+def calculate_salary(request):
+    if request.method == 'POST':
+        form = SalaryForm(request.POST)
+        if form.is_valid():
+            salary = form.save(commit=False)
+            net_salary = salary.gross_salary + salary.house_allowance + salary.medical_allowance - salary.provident_fund - salary.tax_deduction
+            form.instance.net_salary = net_salary
+            form.save()
+            return render(request, 'salary_calculator/result.html', {'net_salary': net_salary})
+    else:
+        form = SalaryForm()
+    return render(request, 'salary_calculator/salary_form.html', {'form': form})
+
+//form 
+<h2>Salary Calculator</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <button type="submit">Calculate Net Salary</button>
+</form>
+
+//url 
+from django.urls import path
+from .views import calculate_salary
+
+urlpatterns = [
+    path('calculate-salary/', calculate_salary, name='calculate_salary'),
+]
+
+from django.urls import path, include
+
+urlpatterns = [
+    # ...
+    path('salary/', include('salary_calculator.urls')),
+]

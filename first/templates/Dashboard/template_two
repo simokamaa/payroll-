@@ -1,0 +1,178 @@
+//models
+from django.db import models
+
+class Transaction(models.Model):
+    ACCOUNT_TYPES = (
+        ('ASSETS', 'Assets'),
+        ('LIABILITIES', 'Liabilities'),
+        ('EQUITY', 'Equity'),
+        ('REVENUE', 'Revenue'),
+        ('EXPENSE', 'Expense'),
+    )
+
+    account = models.CharField(max_length=255)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    type = models.CharField(max_length=10, choices=ACCOUNT_TYPES)
+
+    //views
+    from django.shortcuts import render
+from .models import Transaction
+
+def balance_sheet(request):
+    assets = Transaction.objects.filter(type='ASSETS')
+    liabilities = Transaction.objects.filter(type='LIABILITIES')
+    equity = Transaction.objects.filter(type='EQUITY')
+    revenue = Transaction.objects.filter(type='REVENUE')
+    expenses = Transaction.objects.filter(type='EXPENSE')
+
+    total_assets = assets.aggregate(total=models.Sum('amount'))['total'] or 0
+    total_liabilities = liabilities.aggregate(total=models.Sum('amount'))['total'] or 0
+    total_equity = equity.aggregate(total=models.Sum('amount'))['total'] or 0
+    total_revenue = revenue.aggregate(total=models.Sum('amount'))['total'] or 0
+    total_expenses = expenses.aggregate(total=models.Sum('amount'))['total'] or 0
+
+    net_income = total_revenue - total_expenses
+    total_liabilities_equity = total_liabilities + total_equity
+
+    context = {
+        'assets': assets,
+        'liabilities': liabilities,
+        'equity': equity,
+        'revenue': revenue,
+        'expenses': expenses,
+        'total_assets': total_assets,
+        'total_liabilities': total_liabilities,
+        'total_equity': total_equity,
+        'total_revenue': total_revenue,
+        'total_expenses': total_expenses,
+        'net_income': net_income,
+        'total_liabilities_equity': total_liabilities_equity,
+    }
+
+    return render(request, 'balance_sheet.html', context)
+
+    //templates
+    <h1>Balance Sheet</h1>
+
+<h2>Assets</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Account</th>
+      <th>Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for asset in assets %}
+    <tr>
+      <td>{{ asset.account }}</td>
+      <td>{{ asset.amount }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Liabilities</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Account</th>
+      <th>Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for liability in liabilities %}
+    <tr>
+      <td>{{ liability.account }}</td>
+      <td>{{ liability.amount }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Equity</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Account</th>
+      <th>Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for equity_item in equity %}
+    <tr>
+      <td>{{ equity_item.account }}</td>
+      <td>{{ equity_item.amount }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Revenue</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Account</th>
+      <th>Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for revenue_item in revenue %}
+    <tr>
+      <td>{{ revenue_item.account }}</td>
+      <td>{{ revenue_item.amount }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Expenses</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Account</th>
+      <th>Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for expense in expenses %}
+    <tr>
+      <td>{{ expense.account }}</td>
+      <td>{{ expense.amount }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Summary</h2>
+<table>
+  <tr>
+    <th>Total Assets</th>
+    <th>Total Liabilities</th>
+    <th>Total Equity</th>
+    <th>Total Revenue</th>
+    <th>Total Expenses</th>
+    <th>Net Income</th>
+  </tr>
+  <tr>
+    <td>{{ total_assets }}</td>
+    <td>{{ total_liabilities }}</td>
+    <td>{{ total_equity }}</td>
+    <td>{{ total_revenue }}</td>
+    <td>{{ total_expenses }}</td>
+    <td>{{ net_income }}</td>
+  </tr>
+  <tr>
+    <th colspan="2">Total Liabilities & Equity</th>
+    <td colspan="4">{{ total_liabilities_equity }}</td>
+  </tr>
+</table>
+
+//url
+from django.urls import path, include
+
+urlpatterns = [
+    # ...
+    path('', include('your_app.urls')),
+]
+
