@@ -121,7 +121,11 @@ class first_department(models.Model):
 class DailyWork(models.Model):
     employee_ID =  models.ForeignKey("Employees", on_delete=models.CASCADE)
     total_amount = models.FloatField()
+<<<<<<< Updated upstream
     job_type = models.ForeignKey("job_type", on_delete=models.CASCADE),
+=======
+    job_type = models.ForeignKey("job_type", on_delete=models.CASCADE)
+>>>>>>> Stashed changes
     commision_rate = models.FloatField()
     
     def calculate_income(self):
